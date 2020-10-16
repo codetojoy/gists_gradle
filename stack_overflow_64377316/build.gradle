@@ -1,0 +1,32 @@
+
+apply plugin: 'java'
+
+task gradleTask1(type: Zip) {
+    from 'src/test/resources/source_one/'
+    include '**/*'
+    archiveName 'file-collect.zip'
+    destinationDir(file("${buildDir}/resources/test/staging/target_one"))
+}
+
+task gradleTask2(type: Zip) {
+    from 'src/test/resources/source_two/'
+    include '**/*'
+    archiveName 'file-collect.zip'
+    destinationDir(file("${buildDir}/resources/test/staging/target_two"))
+}
+
+task gradleTask3(type: Zip) {
+    from 'src/test/resources/source_three/'
+    include '**/*'
+    archiveName 'file-collect.zip'
+    destinationDir(file("${buildDir}/resources/test/staging/target_three"))
+}
+
+tasks.withType(Zip).all { task ->
+    def taskName = task.name
+
+    if (taskName ==~ /gradleTask.*/) {
+        println "TRACER adding dependency on ${taskName}"
+        compileJava.finalizedBy taskName
+    }
+}
